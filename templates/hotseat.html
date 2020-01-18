@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Prefiksy</title>
+{% endblock %}
+
+{% block body %}
+    <section id="playground" class="container">
+        <div class="row word-box-container">
+            <div id="word-box-left" class="col word-box"></div>
+            <div id="word-box-right" class="col word-box"></div>
+        </div>
+        <div class="row">
+            <div class="form">
+                <label id="prefix" for="insert-word"></label><input id="insert-word" type="text"><a href="#" id="confirm">ENTER</a>
+                <a href="#" id="passed">PAS</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Teraz Twoja kolej, <span id="current-player"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div id="error" class="col">
+
+            </div>
+        </div>
+        <div class="row">
+            <div id="timer-container" class="col">
+                <div id="timer">
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+

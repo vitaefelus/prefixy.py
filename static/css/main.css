@@ -1,0 +1,35 @@
+.word-box-container {
+    height: 325px;
+}
+
+.word-box {
+    position: relative;
+    overflow-y: scroll;
+    max-height: 325px;
+}
+
+#insert-word {
+    text-transform: uppercase;
+    width: 80%;
+}
+
+.form {
+    width: 80%;
+    margin: 0 auto;
+    padding-left: 9%;
+    padding-right: 9%;
+}
+
+#timer-container {
+    width: 100%;
+    height: 30px;
+    border: 1px solid black;
+    padding: 2px;
+    position: relative;
+}
+
+#timer {
+    width: 100%;
+    height: 100%;
+    background: darkgreen;
+}
