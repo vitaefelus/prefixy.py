@@ -5,12 +5,17 @@ app = Flask(__name__)
 
 dictFile = open('slownikUpper.csv')
 dictionary = [line.rstrip('\n') for line in dictFile]
-prefixes = []
+prefixes = ['STE', 'NIE', 'PRY', 'ABA', 'ŻĄD', 'URZ', 'PAS', 'SAK', 'OBE', 'CWA', 'KWA', 'WRÓ', 'WIE', 'HAM', 'CHO', 'CHA', 'MAM', 'DĘB', 'TĘT', 'JED']
 
-for word in dictionary:
-    prefixes.append(word[:3].replace('\s', ''))
+ok = "AĄBCĆDEĘFGHIJKLMNŃOÓPQRSŚTUWYZŹŻ"
 
-print(set(prefixes))
+#
+# for word in dictionary:
+#    if all(c in ok for c in word) and len(word) > 3 and word[0] != word[1]:
+#        prefixes.append(word[0:3])
+#
+
+print(prefixes)
 
 game = None
 
@@ -21,6 +26,7 @@ def count_polish_chars(text):
 
 class Player:
     '''Klasa definiująca gracza'''
+
     def __init__(self, name):
         self.name = str(name)
         self.points = 0
@@ -45,6 +51,7 @@ class Player:
 
 class PlayerDuo:
     '''Klasa odpowiedzialna za dwójkę graczy i wyznaczanie, kto zaczyna'''
+
     def __init__(self, first_player, second_player):
         self.tossed = random.randint(0, 1)
 
@@ -81,7 +88,7 @@ class Hotseat:
     def next_turn(self, input_word):
         print(self.player_duo.starting_player, self.player_duo.following_player)
         if input_word in self.used_words:
-            
+
             return {
                 'result': 'word_used',
                 'starting_player': self.player_duo.starting_player.name,
