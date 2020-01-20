@@ -26,11 +26,12 @@ function handleWordInsertion( value, response ) {
     let wordBoxLeft = $('#word-box-left');
     let wordBoxRight = $('#word-box-right');
     let errorContainer = $('#error');
+    let scoreBox = $('#score');
 
     insertWord.css('background','#FFFFFF');
+    errorContainer.html('');
 
     if ( response.result === 'word_valid' ) {
-        errorContainer.html('');
         if ( response.turn % 2 === 0 ) {
             wordBoxLeft.append( '<p>' + response.word + '</p>' )
         } else {
@@ -38,12 +39,14 @@ function handleWordInsertion( value, response ) {
         }
         insertWord.val('');
         updateScroll();
+        scoreBox.html( '<span><strong>' + response.starting_player + ':</strong> ' + response.starting_player_score + '</span> <span><strong>' + response.following_player + ':</strong> ' + response.following_player_score + '</span>' )
+
     } else if ( response.result === 'word_invalid' ){
         insertWord.css('background','#FF0000');
-        errorContainer.append( '<p>Tego słowa nie ma w słowniku!</p>' );
+        errorContainer.html( '<p>Tego słowa nie ma w słowniku!</p>' );
     } else {
         insertWord.css('background','#FF0000');
-        errorContainer.append( '<p>Powtórzenie!</p>' );
+        errorContainer.html( '<p>Powtórzenie!</p>' );
     }
 }
 
@@ -53,10 +56,10 @@ $(window).on( 'load', function () {
     let timer = $('#timer');
     let jump = 95;
 
-    setInterval( function () {
+   /* setInterval( function () {
         timer.width(jump + '%');
         jump-=5;
-    }, 1000 );
+    }, 1000 );*/
 
     $('#prefix').html( prefix );
 

@@ -31,5 +31,18 @@
 #timer {
     width: 100%;
     height: 100%;
-    background: darkgreen;
+    background: lightseagreen;
+}
+
+#score {
+    min-height: 30px;
+    padding: 10px;
+    background: darkslategray;
+    color: white !important;
+    width: 100%;
+}
+
+h2 {
+    display: block;
+    padding-top: 20px;
 }
