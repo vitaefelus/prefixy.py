@@ -7,15 +7,9 @@ dictFile = open('slownikUpper.csv')
 dictionary = [line.rstrip('\n') for line in dictFile]
 prefixes = ['STE', 'NIE', 'PRY', 'ABA', 'ŻĄD', 'URZ', 'PAS', 'SAK', 'OBE', 'CWA', 'KWA', 'WRÓ', 'WIE', 'HAM', 'CHO', 'CHA', 'MAM', 'DĘB', 'TĘT', 'JED']
 
-ok = "AĄBCĆDEĘFGHIJKLMNŃOÓPQRSŚTUWYZŹŻ"
-
 #
-# for word in dictionary:
-#    if all(c in ok for c in word) and len(word) > 3 and word[0] != word[1]:
-#        prefixes.append(word[0:3])
+#ok = "AĄBCĆDEĘFGHIJKLMNŃOÓPQRSŚTUWYZŹŻ"
 #
-
-print(prefixes)
 
 game = None
 
@@ -86,7 +80,6 @@ class Hotseat:
         self.turn_counter += 1
 
     def next_turn(self, input_word):
-        print(self.player_duo.starting_player, self.player_duo.following_player)
         if input_word in self.used_words:
 
             return {
@@ -147,7 +140,22 @@ def hotseat():
 
     game = Hotseat(player_duo)
 
-    return render_template('hotseat.html', player1=player1, player2=player2)
+    return render_template('hotseat.html', player1=game.player_duo.starting_player, player2=game.player_duo.following_player)
+
+
+@app.route('/startingturn')
+def starting_turn():
+    global game
+    signal = request.args.get('content', None)
+    if request.method == 'GET':
+        return {
+                'starting_player': game.player_duo.starting_player.name,
+                'starting_player_score': game.player_duo.starting_player.points,
+                'following_player': game.player_duo.following_player.name,
+                'following_player_score': game.player_duo.following_player.points,
+                'current_player': game.current_player().name,
+                'turn': game.turn_counter
+            }
 
 
 @app.route('/nextturn')

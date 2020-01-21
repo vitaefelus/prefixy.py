@@ -31,12 +31,15 @@ function handleWordInsertion( value, response ) {
     insertWord.css('background','#FFFFFF');
     errorContainer.html('');
 
+    turn = response.turn;
+
     if ( response.result === 'word_valid' ) {
-        if ( response.turn % 2 === 0 ) {
+        if ( response.turn % 2 === 0 || response.turn === 0) {
             wordBoxLeft.append( '<p>' + response.word + '</p>' )
         } else {
             wordBoxRight.append( '<p>' + response.word + '</p>' )
         }
+
         insertWord.val('');
         updateScroll();
         scoreBox.html( '<span><strong>' + response.starting_player + ':</strong> ' + response.starting_player_score + '</span> <span><strong>' + response.following_player + ':</strong> ' + response.following_player_score + '</span>' )
@@ -56,13 +59,17 @@ $(window).on( 'load', function () {
     let timer = $('#timer');
     let jump = 95;
 
-   /* setInterval( function () {
+    setInterval( function ()    {
         timer.width(jump + '%');
         jump-=5;
-    }, 1000 );*/
+    }, 1000 );
 
     $('#prefix').html( prefix );
-
+    console.log('test on load')
+    handleAjax( 'GET', '/startingturn', { content: 'give_starting_state' }, ( data ) => {
+        console.log( data );
+        //TO DO: wyślij otrzymane dane do gry i wyświetl to wszystko, w sensie, zeby sie dobrze wyswietlali gracze i slowa wrzucały do odpowiedniego boxa
+    } );
 
     $('body').on( 'keypress', function ( e ) {
         let passed = '';
