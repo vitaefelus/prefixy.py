@@ -42,21 +42,36 @@ function handleWordInsertion( value, response ) {
         insertWord.val('');
         updateScroll();
         playerOneScore.html( response.starting_player_score );
-        playerTwoScore.html( response.following_player_score )
+        playerTwoScore.html( response.following_player_score );
 
+        if ( response.game_state === 'ended' ) {
+            let winner = '';
+            if( response.starting_player_score > response.following_player_score ) {
+                winner = 'Zwycięzca to:' + response.starting_player + '. Wynik: ' + response.starting_player_score;
+            } else if ( response.starting_player_score === response.following_player_score ) {
+                winner = 'REMIS';
+            } else {
+                winner = 'Zwycięzca to: ' + response.following_player + '. Wynik: ' + response.following_player_score;
+            }
 
+            $('body').html(
+                '<h1>Koniec gry! ' + winner + '</h1>'
+            )
+        }
 
     } else if ( response.result === 'word_invalid' ){
         insertWord.css('background','#FF0000');
         errorContainer.html( '<p>Tego słowa nie ma w słowniku!</p>' );
-    } else {
+    } else if (response.result === 'word_used') {
         insertWord.css('background','#FF0000');
         errorContainer.html( '<p>Powtórzenie!</p>' );
     }
 }
 
-$(window).on( 'load', function () {
+$(window).on( 'load', () => {
     let insertWord = $('#insert-word');
+    let enter = $('#enter');
+    let pass = $('#pass');
     let prefix = $('#prefix').html(  );
     let timer = $('#timer');
     let jump = 95;
@@ -66,18 +81,13 @@ $(window).on( 'load', function () {
         jump-=5;
     }, 1000 );
 
-
-    /*handleAjax( 'GET', '/startingturn', { content: 'give_starting_state' }, ( data ) => {
-        console.log( data );
-        //TO DO: wyślij otrzymane dane do gry i wyświetl to wszystko, w sensie, zeby sie dobrze wyswietlali gracze i slowa wrzucały do odpowiedniego boxa
-    } );*/
-
-    $('body').on( 'keypress', function ( e ) {
-        let passed = '';
-        if( e.which == 13 ) { // keypress: 'Enter'
+    $('body').on( 'keypress', ( e ) => {
+        if( e.which == 13 )  // keypress: 'Enter'
             getWordData( insertWord, prefix );
-       } else if( e.which == 47 ) { // keypress: '/'
-            //tu będzie kod do passowania tury
-        }
     } );
+
+    enter.on('click', (  ) => {
+        getWordData( insertWord, prefix );
+    })
+
 } );

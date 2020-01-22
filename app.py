@@ -5,7 +5,9 @@ app = Flask(__name__)
 
 dictFile = open('slownikUpper.csv')
 dictionary = [line.rstrip('\n') for line in dictFile]
-prefixes = ['STE', 'NIE', 'PRY', 'ABA', 'ŻĄD', 'URZ', 'PAS', 'SAK', 'OBE', 'CWA', 'KWA', 'WRÓ', 'WIE', 'HAM', 'CHO', 'CHA', 'MAM', 'DĘB', 'TĘT', 'JED']
+prefixes = ['STE', 'NIE', 'PRY', 'ABA', 'ŻĄD', 'URZ', 'PAS', 'SAK', 'OBE',
+            'CWA', 'KWA', 'WRÓ', 'WIE', 'HAM', 'CHO', 'CHA', 'MAM', 'DĘB',
+            'TĘT', 'JED', 'REK', 'PRO', 'PAR', 'KAR', 'KIE', 'PSI', 'WYG']
 game = None
 polish_chars = set('ĄĆĘŁŃÓŚŹŻ')
 
@@ -84,7 +86,7 @@ class Hotseat:
     def next_turn(self, input_word):
         json = {}
 
-        if input_word in self.used_words:
+        if input_word != '' and input_word.isalnum() and input_word in self.used_words:
 
             json = {
                 'result': 'word_used',
@@ -98,6 +100,8 @@ class Hotseat:
         elif input_word in dictionary:
             self.current_player().add_points(input_word)
             self.used_words.append(input_word)
+            if self.turn_counter == 9:
+                self.state = 'ended'
             json = {
                 'result': 'word_valid',
                 'starting_player': self.player_duo.starting_player.name,
@@ -106,7 +110,8 @@ class Hotseat:
                 'following_player_score': self.player_duo.following_player.points,
                 'current_player': self.current_player().name,
                 'turn': self.turn_counter,
-                'word': input_word
+                'word': input_word,
+                'game_state': self.state
             }
             self.next_player()
         else:
@@ -122,7 +127,7 @@ class Hotseat:
         return json
 
     def end_game(self):
-        if self.turn_counter == 59:
+        if self.turn_counter == 9:
             return {'result': 'end_game'}
 
 
@@ -138,19 +143,26 @@ def hotseat():
     player1_name = request.args.get('player1Name', None)
     player2_name = request.args.get('player2Name', None)
 
-    player1 = Player(player1_name)
-    player2 = Player(player2_name)
+    if player1_name == '' or player2_name == '':
+        player1 = Player('Player1')
+        player2 = Player('Player2')
+    else:
+        player1 = Player(player1_name)
+        player2 = Player(player2_name)
 
     player_duo = PlayerDuo(player1, player2)
 
     game = Hotseat(player_duo)
 
-    return render_template('hotseat.html', player1=game.player_duo.starting_player, player2=game.player_duo.following_player, prefix=game.prefix)
+    return render_template('hotseat.html',
+                           player1=game.player_duo.starting_player,
+                           player2=game.player_duo.following_player,
+                           prefix=game.prefix)
 
 
 @app.route('/nextturn')
 def turn():
-    '''ta metoda ma odebrać sygnał o kolejnej turze i odesłać imię aktywnego gracza'''
+    '''ta metoda ma odebrać sygnał o kolejnej turze'''
     global game
     if request.method == 'GET':
         input_word = request.args.get('text', None)
