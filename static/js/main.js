@@ -57,7 +57,7 @@ function handleWordInsertion( value, response ) {
 
 $(window).on( 'load', function () {
     let insertWord = $('#insert-word');
-    let prefix = 'STE';
+    let prefix = $('#prefix').html(  );
     let timer = $('#timer');
     let jump = 95;
 
@@ -66,7 +66,6 @@ $(window).on( 'load', function () {
         jump-=5;
     }, 1000 );
 
-    $('#prefix').html( prefix );
 
     /*handleAjax( 'GET', '/startingturn', { content: 'give_starting_state' }, ( data ) => {
         console.log( data );

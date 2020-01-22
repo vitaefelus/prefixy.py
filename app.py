@@ -145,7 +145,7 @@ def hotseat():
 
     game = Hotseat(player_duo)
 
-    return render_template('hotseat.html', player1=game.player_duo.starting_player, player2=game.player_duo.following_player)
+    return render_template('hotseat.html', player1=game.player_duo.starting_player, player2=game.player_duo.following_player, prefix=game.prefix)
 
 
 @app.route('/nextturn')
