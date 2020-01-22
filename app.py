@@ -6,16 +6,18 @@ app = Flask(__name__)
 dictFile = open('slownikUpper.csv')
 dictionary = [line.rstrip('\n') for line in dictFile]
 prefixes = ['STE', 'NIE', 'PRY', 'ABA', 'ŻĄD', 'URZ', 'PAS', 'SAK', 'OBE', 'CWA', 'KWA', 'WRÓ', 'WIE', 'HAM', 'CHO', 'CHA', 'MAM', 'DĘB', 'TĘT', 'JED']
-
-#
-#ok = "AĄBCĆDEĘFGHIJKLMNŃOÓPQRSŚTUWYZŹŻ"
-#
-
 game = None
+polish_chars = set('ĄĆĘŁŃÓŚŹŻ')
 
 
-def count_polish_chars(text):
-    return text.count('Ą' or 'Ć' or 'Ę' or 'Ł' or 'Ń' or 'Ó' or 'Ś' or 'Ź' or 'Ż')
+def count_polish_chars(word):
+    counter = 0
+
+    for letter in word[3:]:
+        for char in polish_chars:
+            if letter == char:
+                counter += 1
+    return counter
 
 
 class Player:
@@ -33,8 +35,7 @@ class Player:
         self.name = name
 
     def add_points(self, word):
-        polish_chars = count_polish_chars(word)
-        self.points += len(word) * 10 + polish_chars * 5
+        self.points += len(word) * 10 + count_polish_chars(word) * 5
 
     def has_passed(self):
         if not self.passed:
@@ -69,6 +70,7 @@ class Hotseat:
         self.turn_counter = 0
         self.state = 'not_started'
         self.player_duo = player_duo
+        self.prefix = random.choice(prefixes)
 
     def current_player(self):
         if self.turn_counter % 2 == 0:
@@ -80,9 +82,11 @@ class Hotseat:
         self.turn_counter += 1
 
     def next_turn(self, input_word):
+        json = {}
+
         if input_word in self.used_words:
 
-            return {
+            json = {
                 'result': 'word_used',
                 'starting_player': self.player_duo.starting_player.name,
                 'starting_player_score': self.player_duo.starting_player.points,
@@ -93,9 +97,8 @@ class Hotseat:
             }
         elif input_word in dictionary:
             self.current_player().add_points(input_word)
-            self.next_player()
             self.used_words.append(input_word)
-            return {
+            json = {
                 'result': 'word_valid',
                 'starting_player': self.player_duo.starting_player.name,
                 'starting_player_score': self.player_duo.starting_player.points,
@@ -105,8 +108,9 @@ class Hotseat:
                 'turn': self.turn_counter,
                 'word': input_word
             }
+            self.next_player()
         else:
-            return {
+            json = {
                 'result': 'word_invalid',
                 'starting_player': self.player_duo.starting_player.name,
                 'starting_player_score': self.player_duo.starting_player.points,
@@ -115,6 +119,7 @@ class Hotseat:
                 'current_player': self.current_player().name,
                 'turn': self.turn_counter
             }
+        return json
 
     def end_game(self):
         if self.turn_counter == 59:
@@ -141,21 +146,6 @@ def hotseat():
     game = Hotseat(player_duo)
 
     return render_template('hotseat.html', player1=game.player_duo.starting_player, player2=game.player_duo.following_player)
-
-
-@app.route('/startingturn')
-def starting_turn():
-    global game
-    signal = request.args.get('content', None)
-    if request.method == 'GET':
-        return {
-                'starting_player': game.player_duo.starting_player.name,
-                'starting_player_score': game.player_duo.starting_player.points,
-                'following_player': game.player_duo.following_player.name,
-                'following_player_score': game.player_duo.following_player.points,
-                'current_player': game.current_player().name,
-                'turn': game.turn_counter
-            }
 
 
 @app.route('/nextturn')

@@ -26,12 +26,11 @@ function handleWordInsertion( value, response ) {
     let wordBoxLeft = $('#word-box-left');
     let wordBoxRight = $('#word-box-right');
     let errorContainer = $('#error');
-    let scoreBox = $('#score');
+    let playerOneScore = $('#player_one .score');
+    let playerTwoScore = $('#player_two .score');
 
     insertWord.css('background','#FFFFFF');
     errorContainer.html('');
-
-    turn = response.turn;
 
     if ( response.result === 'word_valid' ) {
         if ( response.turn % 2 === 0 || response.turn === 0) {
@@ -42,7 +41,10 @@ function handleWordInsertion( value, response ) {
 
         insertWord.val('');
         updateScroll();
-        scoreBox.html( '<span><strong>' + response.starting_player + ':</strong> ' + response.starting_player_score + '</span> <span><strong>' + response.following_player + ':</strong> ' + response.following_player_score + '</span>' )
+        playerOneScore.html( response.starting_player_score );
+        playerTwoScore.html( response.following_player_score )
+
+
 
     } else if ( response.result === 'word_invalid' ){
         insertWord.css('background','#FF0000');
@@ -65,11 +67,11 @@ $(window).on( 'load', function () {
     }, 1000 );
 
     $('#prefix').html( prefix );
-    console.log('test on load')
-    handleAjax( 'GET', '/startingturn', { content: 'give_starting_state' }, ( data ) => {
+
+    /*handleAjax( 'GET', '/startingturn', { content: 'give_starting_state' }, ( data ) => {
         console.log( data );
         //TO DO: wyślij otrzymane dane do gry i wyświetl to wszystko, w sensie, zeby sie dobrze wyswietlali gracze i slowa wrzucały do odpowiedniego boxa
-    } );
+    } );*/
 
     $('body').on( 'keypress', function ( e ) {
         let passed = '';
