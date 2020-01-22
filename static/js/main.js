@@ -26,8 +26,10 @@ function handleWordInsertion( value, response ) {
     let wordBoxLeft = $('#word-box-left');
     let wordBoxRight = $('#word-box-right');
     let errorContainer = $('#error');
-    let playerOneScore = $('#player_one .score');
-    let playerTwoScore = $('#player_two .score');
+    let playerOneScoreContainer = $('#player_one .score');
+    let playerTwoScoreContainer = $('#player_two .score');
+    let playerOneScore = response.starting_player_score;
+    let playerTwoScore = response.following_player_score;
 
     insertWord.css('background','#FFFFFF');
     errorContainer.html('');
@@ -41,17 +43,17 @@ function handleWordInsertion( value, response ) {
 
         insertWord.val('');
         updateScroll();
-        playerOneScore.html( response.starting_player_score );
-        playerTwoScore.html( response.following_player_score );
+        playerOneScoreContainer.html( playerOneScore );
+        playerTwoScoreContainer.html( playerTwoScore );
 
         if ( response.game_state === 'ended' ) {
             let winner = '';
-            if( response.starting_player_score > response.following_player_score ) {
-                winner = 'Zwycięzca to:' + response.starting_player + '. Wynik: ' + response.starting_player_score;
-            } else if ( response.starting_player_score === response.following_player_score ) {
+            if( playerOneScore > playerTwoScore ) {
+                winner = 'Zwycięzca to:' + response.starting_player + '. Wynik: ' + playerOneScore;
+            } else if ( playerOneScore === playerTwoScore ) {
                 winner = 'REMIS';
             } else {
-                winner = 'Zwycięzca to: ' + response.following_player + '. Wynik: ' + response.following_player_score;
+                winner = 'Zwycięzca to: ' + response.following_player + '. Wynik: ' + playerTwoScore;
             }
 
             $('body').html(
