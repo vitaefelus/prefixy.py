@@ -37,7 +37,7 @@ class Player:
         self.name = name
 
     def add_points(self, word):
-        self.points += len(word) * 10 + count_polish_chars(word) * 5
+        self.points += len(word[3:]) * 10 + count_polish_chars(word[3:]) * 5
 
     def has_passed(self):
         if not self.passed:
@@ -75,19 +75,45 @@ class Hotseat:
         self.prefix = random.choice(prefixes)
 
     def current_player(self):
+        if self.player_duo.following_player.passed:
+            return self.player_duo.starting_player
+
+        if self.player_duo.starting_player.passed:
+            return self.player_duo.following_player
+
         if self.turn_counter % 2 == 0:
             return self.player_duo.starting_player
         else:
             return self.player_duo.following_player
 
     def next_player(self):
-        self.turn_counter += 1
+        if self.player_duo.following_player.passed:
+            return self.player_duo.starting_player
+
+        if self.player_duo.starting_player.passed:
+            return self.player_duo.following_player
+
+        if self.turn_counter % 2 == 0:
+            return self.player_duo.following_player
+        else:
+            return self.player_duo.starting_player
 
     def next_turn(self, input_word):
         json = {}
 
-        if input_word != '' and input_word.isalnum() and input_word in self.used_words:
-
+        if self.player_duo.starting_player.passed is True and self.player_duo.following_player.passed is True:
+            self.state = 'ended'
+            json = {
+                'starting_player': self.player_duo.starting_player.name,
+                'starting_player_score': self.player_duo.starting_player.points,
+                'following_player': self.player_duo.following_player.name,
+                'following_player_score': self.player_duo.following_player.points,
+                'current_player': self.current_player().name,
+                'next_player': self.next_player().name,
+                'turn': self.turn_counter,
+                'game_state': self.state
+            }
+        elif input_word != '' and input_word.isalnum() and input_word in self.used_words:
             json = {
                 'result': 'word_used',
                 'starting_player': self.player_duo.starting_player.name,
@@ -95,11 +121,15 @@ class Hotseat:
                 'following_player': self.player_duo.following_player.name,
                 'following_player_score': self.player_duo.following_player.points,
                 'current_player': self.current_player().name,
-                'turn': self.turn_counter
+                'next_player': self.next_player().name,
+                'turn': self.turn_counter,
+                'game_state': self.state
             }
-        elif input_word in dictionary:
+        elif input_word != '' and input_word.isalnum() and input_word in dictionary:
+
             self.current_player().add_points(input_word)
             self.used_words.append(input_word)
+
             if self.turn_counter == 9:
                 self.state = 'ended'
             json = {
@@ -109,11 +139,29 @@ class Hotseat:
                 'following_player': self.player_duo.following_player.name,
                 'following_player_score': self.player_duo.following_player.points,
                 'current_player': self.current_player().name,
+                'next_player': self.next_player().name,
                 'turn': self.turn_counter,
                 'word': input_word,
                 'game_state': self.state
             }
-            self.next_player()
+            self.turn_counter += 1
+        elif input_word == '':
+            if self.turn_counter % 2 == 0 or self.turn_counter == 0:
+                self.player_duo.starting_player.passed = True
+            else:
+                self.player_duo.following_player.passed = True
+            json = {
+                'result': 'player_passed',
+                'starting_player': self.player_duo.starting_player.name,
+                'starting_player_score': self.player_duo.starting_player.points,
+                'following_player': self.player_duo.following_player.name,
+                'following_player_score': self.player_duo.following_player.points,
+                'current_player': self.current_player().name,
+                'next_player': self.next_player().name,
+                'turn': self.turn_counter,
+                'word': input_word,
+                'game_state': self.state
+            }
         else:
             json = {
                 'result': 'word_invalid',
@@ -122,7 +170,9 @@ class Hotseat:
                 'following_player': self.player_duo.following_player.name,
                 'following_player_score': self.player_duo.following_player.points,
                 'current_player': self.current_player().name,
-                'turn': self.turn_counter
+                'next_player': self.next_player().name,
+                'turn': self.turn_counter,
+                'game_state': self.state
             }
         return json
 
@@ -167,6 +217,13 @@ def turn():
     if request.method == 'GET':
         input_word = request.args.get('text', None)
         return game.next_turn(input_word)
+
+
+@app.route('/pass')
+def player_passed():
+    '''ta metoda ma odebrać sygnał o tym, że któryś z graczy spasował'''
+    global game
+    return game.next_turn('')
 
 
 if __name__ == '__main__':
