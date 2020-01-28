@@ -117,14 +117,7 @@ $(window).on( 'load', () => {
     let insertWord = $('#insert-word'),
         enter = $('#enter'),
         pass = $('#pass'),
-        prefix = $('#prefix').html(  ),
-        timer = $('#timer'),
-        jump = 95;
-
-    setInterval( function ()    {
-        timer.width(jump + '%');
-        jump-=5;
-    }, 1000 );
+        prefix = $('#prefix').html(  );
 
     $('body').on( 'keypress', ( e ) => {
         if( e.which == 13 )  // keypress: 'Enter'
