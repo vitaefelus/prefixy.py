@@ -73,13 +73,27 @@ function handleWordInsertion( value, response ) {
         errorContainer.html( '<p>Powtórzenie!</p>' );
 
     } else if ( response.result === 'player_passed' ) {
-        console.log('player_passed');
-        if ( response.turn % 2 === 0 || response.turn === 0 ) {
-            playerOnePassed = true;
-            wordBoxLeft.css('background','#DDDDDD');
+        if ( playerOnePassed || playerTwoPassed ) {
+            let winner = '';
+            if( playerOneScore > playerTwoScore ) {
+                winner = 'Zwycięzca to:' + response.starting_player + '. Wynik: ' + playerOneScore;
+            } else if ( playerOneScore === playerTwoScore ) {
+                winner = 'REMIS';
+            } else {
+                winner = 'Zwycięzca to: ' + response.following_player + '. Wynik: ' + playerTwoScore;
+            }
+
+            $('body').html(
+                '<h1>Koniec gry! ' + winner + '</h1>'
+            )
         } else {
-            playerTwoPassed = true;
-            wordBoxRight.css('background','#DDDDDD');
+            if ( response.turn % 2 === 0 || response.turn === 0 ) {
+                playerOnePassed = true;
+                wordBoxLeft.css('background','#DDDDDD');
+            } else {
+                playerTwoPassed = true;
+                wordBoxRight.css('background','#DDDDDD');
+            }
         }
     }
 
