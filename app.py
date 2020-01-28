@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, url_for, request
+from flask import Flask, jsonify, render_template, url_for, request, jsonify
 import random
 
 app = Flask(__name__)
@@ -173,7 +173,7 @@ class Hotseat:
                 'turn': self.turn_counter,
                 'game_state': self.state
             }
-        return json
+        return jsonify(json)
 
     def end_game(self):
         if self.turn_counter == 9:
