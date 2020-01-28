@@ -67,6 +67,7 @@ class PlayerDuo:
 
 
 class Hotseat:
+    '''Klasa odpowiedzialna za rozgrywkę w trybie hotseat'''
     def __init__(self, player_duo):
         self.used_words = []
         self.turn_counter = 0
@@ -124,7 +125,7 @@ class Hotseat:
                 'turn': self.turn_counter,
                 'game_state': self.state
             }
-        elif input_word != '' and input_word.isalnum() and input_word in dictionary:
+        elif input_word != '' and input_word.isalnum() and len(input_word) > 3 and input_word in dictionary:
 
             self.current_player().add_points(input_word)
             self.used_words.append(input_word)
@@ -192,13 +193,13 @@ def hotseat():
     player1_name = request.args.get('player1Name', None)
     player2_name = request.args.get('player2Name', None)
 
-    if player1_name == '':
+    if len(player1_name) == 0 and len(player2_name) > 0:
         player1 = Player('Player1')
         player2 = Player(player2_name)
-    elif player2_name == '':
+    elif len(player2_name) == 0 and len(player1_name) > 0:
         player1 = Player(player1_name)
         player2 = Player('Player2')
-    elif player1_name == '' and player2_name == '':
+    elif len(player1_name) == 0 and len(player2_name) == 0:
         player1 = Player('Player1')
         player2 = Player('Player2')
     else:
