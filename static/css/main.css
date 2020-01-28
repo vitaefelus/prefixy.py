@@ -10,7 +10,15 @@
 
 #insert-word {
     text-transform: uppercase;
-    width: 80%;
+    width: 75%;
+    transition-duration: .4s;
+    border: 3px solid darkslategray;
+    padding: 3px;
+}
+
+.inserted_word {
+    color: darkslategray;
+    font-weight: bold;
 }
 
 .form {
@@ -45,4 +53,36 @@
 h2 {
     display: block;
     padding-top: 20px;
+}
+
+button {
+    background: darkslategray;
+    color: lightseagreen;
+    border: 2px solid lightseagreen;
+    padding: 5px;
+    border-radius: 2px;
+    transition-duration: .4s;
+}
+
+button:hover {
+    background: lightseagreen;
+    color: darkslategray;
+    border-color: darkslategray;
+}
+
+button#enter {
+    margin-left: 3px;
+}
+
+#prefix {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.whos-turn {
+    display: block;
+    width: 100%;
+    font-size: 26px;
+    margin-top: 15px;
+    text-align: center;
 }

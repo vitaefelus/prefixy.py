@@ -31,31 +31,33 @@ function getWordData( source, prefix ) {
 }
 
 function handleWordInsertion( value, response ) {
-    let insertWord = $('#insert-word');
-    let wordBoxLeft = $('#word-box-left');
-    let wordBoxRight = $('#word-box-right');
-    let errorContainer = $('#error');
-    let playerOneScoreContainer = $('#player_one .score');
-    let playerTwoScoreContainer = $('#player_two .score');
-    let playerOneScore = response.starting_player_score;
-    let playerTwoScore = response.following_player_score;
+    let insertWord = $('#insert-word'),
+        wordBoxLeft = $('#word-box-left'),
+        wordBoxRight = $('#word-box-right'),
+        errorContainer = $('#error'),
+        playerOneScoreContainer = $('#player_one .score'),
+        playerTwoScoreContainer = $('#player_two .score'),
+        playerOneScore = response.starting_player_score,
+        playerTwoScore = response.following_player_score,
+        currPlayerCont = $('#current-player');
 
     insertWord.css('background','#FFFFFF');
     errorContainer.html('');
 
     if ( response.result === 'word_valid' ) {
+        currPlayerCont.html( response.next_player );
 
         if ( response.turn % 2 === 0 || response.turn === 0 ) {
             if ( playerOnePassed ) {
-                wordBoxRight.append( '<p>' + response.word + '</p>' );
+                wordBoxRight.append( '<p class="inserted_word">' + response.word + '</p>' );
             } else {
-                wordBoxLeft.append( '<p>' + response.word + '</p>' );
+                wordBoxLeft.append( '<p class="inserted_word">' + response.word + '</p>' );
             }
         } else {
             if ( playerTwoPassed ) {
-                wordBoxLeft.append( '<p>' + response.word + '</p>' );
+                wordBoxLeft.append( '<p class="inserted_word">' + response.word + '</p>' );
             } else {
-                wordBoxRight.append( '<p>' + response.word + '</p>' );
+                wordBoxRight.append( '<p class="inserted_word">' + response.word + '</p>' );
             }
         }
 
@@ -73,6 +75,7 @@ function handleWordInsertion( value, response ) {
         errorContainer.html( '<p>Powtórzenie!</p>' );
 
     } else if ( response.result === 'player_passed' ) {
+        currPlayerCont.html( response.next_player );
         if ( playerOnePassed || playerTwoPassed ) {
             let winner = '';
             if( playerOneScore > playerTwoScore ) {
