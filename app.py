@@ -99,7 +99,6 @@ class Hotseat:
             return self.player_duo.starting_player
 
     def next_turn(self, input_word):
-        json = {}
 
         if self.player_duo.starting_player.passed is True and self.player_duo.following_player.passed is True:
             self.state = 'ended'
@@ -198,6 +197,9 @@ def hotseat():
         player2 = Player(player2_name)
     elif player2_name == '':
         player1 = Player(player1_name)
+        player2 = Player('Player2')
+    elif player1_name == '' and player2_name == '':
+        player1 = Player('Player1')
         player2 = Player('Player2')
     else:
         player1 = Player(player1_name)
