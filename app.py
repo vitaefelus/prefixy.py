@@ -193,8 +193,11 @@ def hotseat():
     player1_name = request.args.get('player1Name', None)
     player2_name = request.args.get('player2Name', None)
 
-    if player1_name == '' or player2_name == '':
+    if player1_name == '':
         player1 = Player('Player1')
+        player2 = Player(player2_name)
+    elif player2_name == '':
+        player1 = Player(player1_name)
         player2 = Player('Player2')
     else:
         player1 = Player(player1_name)
