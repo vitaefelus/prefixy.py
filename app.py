@@ -190,16 +190,16 @@ def hello_world():
 def hotseat():
     global game
 
-    player1_name = request.args.get('player1Name', None)
-    player2_name = request.args.get('player2Name', None)
+    player1_name = request.args.get('player1Name', 'Player1')
+    player2_name = request.args.get('player2Name', 'Player2')
 
-    if len(player1_name) == 0 and len(player2_name) > 0:
+    if not player1_name.isalnum() and player2_name.isalnum():
         player1 = Player('Player1')
         player2 = Player(player2_name)
-    elif len(player2_name) == 0 and len(player1_name) > 0:
+    elif not player2_name.isalnum() and player1_name.isalnum():
         player1 = Player(player1_name)
         player2 = Player('Player2')
-    elif len(player1_name) == 0 and len(player2_name) == 0:
+    elif not player1_name.isalnum() and not player2_name.isalnum():
         player1 = Player('Player1')
         player2 = Player('Player2')
     else:

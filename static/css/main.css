@@ -86,3 +86,7 @@ button#enter {
     margin-top: 15px;
     text-align: center;
 }
+
+.signature {
+    font-family: 'Comic Sans MS', serif;
+}
