@@ -68,18 +68,18 @@ function handleWordInsertion( value, response ) {
 
     } else if ( response.result === 'word_invalid' ){
         insertWord.css('background','#FF0000');
-        errorContainer.html( '<p>Tego słowa nie ma w słowniku!</p>' );
+        errorContainer.html( '<p class="error">Tego słowa nie ma w słowniku!</p>' );
 
     } else if ( response.result === 'word_used' ) {
         insertWord.css('background','#FF0000');
-        errorContainer.html( '<p>Powtórzenie!</p>' );
+        errorContainer.html( '<p class="error">Powtórzenie!</p>' );
 
     } else if ( response.result === 'player_passed' ) {
         currPlayerCont.html( response.next_player );
         if ( playerOnePassed || playerTwoPassed ) {
             let winner = '';
             if( playerOneScore > playerTwoScore ) {
-                winner = 'Zwycięzca to:' + response.starting_player + '. Wynik: ' + playerOneScore;
+                winner = 'Zwycięzca to: ' + response.starting_player + '. Wynik: ' + playerOneScore;
             } else if ( playerOneScore === playerTwoScore ) {
                 winner = 'REMIS';
             } else {

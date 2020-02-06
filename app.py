@@ -15,7 +15,7 @@ polish_chars = set('ĄĆĘŁŃÓŚŹŻ')
 def count_polish_chars(word):
     counter = 0
 
-    for letter in word[3:]:
+    for letter in word:
         for char in polish_chars:
             if letter == char:
                 counter += 1
@@ -126,7 +126,6 @@ class Hotseat:
                 'game_state': self.state
             }
         elif input_word != '' and input_word.isalnum() and len(input_word) > 3 and input_word in dictionary:
-
             self.current_player().add_points(input_word)
             self.used_words.append(input_word)
 
